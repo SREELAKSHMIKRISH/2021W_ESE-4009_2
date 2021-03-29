@@ -1,4 +1,5 @@
-#include "ThingSpeak.h"
+
+#include "ThingSpeak.h" //header file to support the thingspeak command
 #include <ESP8266WiFi.h>
 
 //------- WI-FI details ----------//
@@ -11,37 +12,37 @@ unsigned long Channel_ID = 1341402; // Your Channel ID
 const char * myWriteAPIKey = "ETTVLC58DYWWO2AC"; //Your write API key
 //-------------------------------------------//
 
-const int Field_Number_1 = 1;
-const int Field_Number_2 = 2;
-String value = "";
-const char *msg;
-int value_1 = 0, value_2 = 0;
+const int Field_Number_1 = 1; //filed for humidity
+const int Field_Number_2 = 2; //field for temperature
+String value = "";           //string value is initialised
+const char *msg;             //convert the string into a character array
+int value_1 = 0, value_2 = 0;  //values entered in the field is defined
 //int x, y;
-WiFiClient  client;
+WiFiClient  client;             //object of the ESP8266 header file is used to create a object called client 
 
 void setup()
 {
-  Serial.begin(115200);
-  WiFi.mode(WIFI_STA);
-  ThingSpeak.begin(client);
-  internet();
+  Serial.begin(115200);         //corresponding baud rate is set
+  WiFi.mode(WIFI_STA);          //station mode for esp8266
+  ThingSpeak.begin(client);     //passing the client object of esp8266 to the function of thingspeak
+  internet();                   //enabling the connection to wifi
 }
 
 void loop()
 {
   internet();
  
-    if(Serial.available() > 0)
+    if(Serial.available() > 0)            //to check whether there is any incoming character
 {
-       if (Serial.read() == '*')
+       if (Serial.read() == '*')        //starting character
       {
-      value = Serial.readStringUntil('#');
-      Serial.println(value);
-      msg=value.c_str();
-       // if (value[5] == '#')
+      value = Serial.readStringUntil('#');    //terminating character
+      Serial.println(value);         //debugging
+      msg=value.c_str();              //converting the value to the character array
+       // if (value[5] == '#')        //setting the index
         {
-          value_1 = ((msg[0] - 48) * 10 + (msg[1] - 48));
-          value_2 = ((msg[3] - 48) * 10 + (msg[4] - 48));
+          value_1 = ((msg[0] - 48) * 10 + (msg[1] - 48));   //converting value_1 to number 
+          value_2 = ((msg[3] - 48) * 10 + (msg[4] - 48));   //converting value_2 to number
         }
       }
     }
@@ -49,12 +50,12 @@ void loop()
     Serial.println(value_1);
     Serial.println(value_2);
     delay(500);
-  upload();
+  upload();                       //command used to write data to thingspeak
 }
 
 void internet()
 {
-  if (WiFi.status() != WL_CONNECTED)
+  if (WiFi.status() != WL_CONNECTED)          //for checking the connection of wifi
   {
     while (WiFi.status() != WL_CONNECTED)
     {
@@ -66,9 +67,9 @@ void internet()
 
 void upload()
 {
-  ThingSpeak.writeField(Channel_ID, Field_Number_1, value_1, myWriteAPIKey);
+  ThingSpeak.writeField(Channel_ID, Field_Number_1, value_1, myWriteAPIKey);      //passing the field1 arguments of channel 
   delay(15000);
-  ThingSpeak.writeField(Channel_ID, Field_Number_2, value_2, myWriteAPIKey);
+  ThingSpeak.writeField(Channel_ID, Field_Number_2, value_2, myWriteAPIKey);      //passing the filed2 arguments of the channel
   delay(15000);
   value = "";
 
