@@ -1,6 +1,6 @@
 
 #include "ThingSpeak.h" //header file to support the thingspeak command
-#include <ESP8266WiFi.h>
+#include <ESP8266WiFi.h>  //header file used to support the command based on thingspeak
 
 //------- WI-FI details ----------//
 char ssid[] = "iPhone"; //SSID here
